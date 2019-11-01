@@ -19,9 +19,10 @@ function submitHandler () {
     $('form').submit(event => {
         event.preventDefault();
         let num = $('.numInput').val();
+        if(num < 1 || num > 50){
+            throw "Number not valid"
+        }
         getDogImages(num);
-
-    
     })
 }
 
