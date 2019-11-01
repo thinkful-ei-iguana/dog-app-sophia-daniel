@@ -1,29 +1,34 @@
-function getDogImages (num) {
-  fetch(`https://dog.ceo/api/breeds/image/random/${num}`)
+function getDogImages (breed) {
+  fetch(`https://dog.ceo/api/breed/${breed}/images/random`)
     .then(response => response.json())
-    .then(responseJson =>
-        displayDogs(responseJson));
+    .then(responseJson => displayDogs(responseJson))
+    .catch(error => {
+      console.log(error);
+    });
+  
 }
 
-function displayDogs (dogsArray) {
-    console.log(dogsArray);
-    let dogHtml = '';
-    dogsArray.message.forEach(element => {
-        dogHtml += `<img class="results-img" src=${element}></img>`
-    });
-    console.log(dogHtml);
-    $('.image-container').html(dogHtml);
+function displayDogs (response) {
+  let dogHtml = '';
+  if (response.status !== 'error') {
+    dogHtml = `
+      <img class="results-img" src=${response.message}></img>
+    `; 
+  } else {
+    dogHtml = `
+      <p>Breed does not exist</p>
+    `;
+  }
+  $('.image-container').html(dogHtml);
+  
 }
 
 function submitHandler () {
-    $('form').submit(event => {
-        event.preventDefault();
-        let num = $('.numInput').val();
-        if(num < 1 || num > 50){
-            throw "Number not valid"
-        }
-        getDogImages(num);
-    })
+  $('form').submit(event => {
+    event.preventDefault();
+    let breed = $('.breedInput').val();
+    getDogImages(breed);
+  })
 }
 
 submitHandler();
